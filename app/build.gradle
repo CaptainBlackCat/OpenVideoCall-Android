@@ -5,13 +5,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "io.agora.openvcall"
         minSdkVersion 16 // ICE_CREAM_SANDWICH
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 18
         versionName "x.y.z"
 
@@ -47,13 +46,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:design:25.3.0'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'com.github.tony19:logback-android-core:1.1.1-4'
-    compile('com.github.tony19:logback-android-classic:1.1.1-4') {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'org.slf4j:slf4j-api:1.7.21'
+    implementation 'com.github.tony19:logback-android-core:1.1.1-4'
+    implementation('com.github.tony19:logback-android-classic:1.1.1-4') {
         // workaround issue #73
         exclude group: 'com.google.android', module: 'android'
     }

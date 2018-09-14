@@ -16,6 +16,8 @@ import io.agora.openvcall.R;
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
+import io.agora.rtc.video.VideoEncoderConfiguration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,7 @@ public class WorkerThread extends Thread {
                     break;
                 case ACTION_WORKER_CONFIG_ENGINE:
                     Object[] configData = (Object[]) msg.obj;
-                    mWorkerThread.configEngine((int) configData[0], (String) configData[1], (String) configData[2]);
+                    mWorkerThread.configEngine((VideoEncoderConfiguration.VideoDimensions) configData[0], (String) configData[1], (String) configData[2]);
                     break;
                 case ACTION_WORKER_PREVIEW:
                     Object[] previewData = (Object[]) msg.obj;
@@ -171,18 +173,18 @@ public class WorkerThread extends Thread {
 
     private final MyEngineEventHandler mEngineEventHandler;
 
-    public final void configEngine(int vProfile, String encryptionKey, String encryptionMode) {
+    public final void configEngine(VideoEncoderConfiguration.VideoDimensions videoDimension, String encryptionKey, String encryptionMode) {
         if (Thread.currentThread() != this) {
-            log.warn("configEngine() - worker thread asynchronously " + vProfile + " " + encryptionMode);
+            log.warn("configEngine() - worker thread asynchronously " + videoDimension + " " + encryptionMode);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_CONFIG_ENGINE;
-            envelop.obj = new Object[]{vProfile, encryptionKey, encryptionMode};
+            envelop.obj = new Object[]{videoDimension, encryptionKey, encryptionMode};
             mWorkerHandler.sendMessage(envelop);
             return;
         }
 
         ensureRtcEngineReadyLock();
-        mEngineConfig.mVideoProfile = vProfile;
+        mEngineConfig.mVideoDimension = videoDimension;
 
         if (!TextUtils.isEmpty(encryptionKey)) {
             mRtcEngine.setEncryptionMode(encryptionMode);
@@ -190,9 +192,13 @@ public class WorkerThread extends Thread {
             mRtcEngine.setEncryptionSecret(encryptionKey);
         }
 
-        mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, false);
+        // mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, false);  //for sdk earlier than 2.3.0
+        mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(videoDimension,
+                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                VideoEncoderConfiguration.STANDARD_BITRATE,
+                VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
 
-        log.debug("configEngine " + mEngineConfig.mVideoProfile + " " + encryptionMode);
+        log.debug("configEngine " + mEngineConfig.mVideoDimension + " " + encryptionMode);
     }
 
     public final void preview(boolean start, SurfaceView view, int uid) {

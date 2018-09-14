@@ -1,7 +1,9 @@
 package io.agora.openvcall.model;
 
+import io.agora.rtc.video.VideoEncoderConfiguration;
+
 public class EngineConfig {
-    public int mVideoProfile;
+    VideoEncoderConfiguration.VideoDimensions mVideoDimension;
 
     public int mUid;
 

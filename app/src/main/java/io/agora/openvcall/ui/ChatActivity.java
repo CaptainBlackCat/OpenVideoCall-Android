@@ -47,6 +47,7 @@ import io.agora.propeller.ui.RtlLinearLayoutManager;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
+import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class ChatActivity extends BaseActivity implements AGEventHandler {
 
@@ -214,7 +215,7 @@ public class ChatActivity extends BaseActivity implements AGEventHandler {
     private int getVideoProfileIndex() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int profileIndex = pref.getInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX, ConstantApp.DEFAULT_PROFILE_IDX);
-        if (profileIndex > ConstantApp.VIDEO_PROFILES.length - 1) {
+        if (profileIndex > ConstantApp.VIDEO_DIMENSIONS.length - 1) {
             profileIndex = ConstantApp.DEFAULT_PROFILE_IDX;
 
             // save the new value
@@ -226,9 +227,9 @@ public class ChatActivity extends BaseActivity implements AGEventHandler {
     }
 
     private void doConfigEngine(String encryptionKey, String encryptionMode) {
-        int vProfile = ConstantApp.VIDEO_PROFILES[getVideoProfileIndex()];
+        VideoEncoderConfiguration.VideoDimensions videoDimension = ConstantApp.VIDEO_DIMENSIONS[getVideoProfileIndex()];
 
-        worker().configEngine(vProfile, encryptionKey, encryptionMode);
+        worker().configEngine(videoDimension, encryptionKey, encryptionMode);
     }
 
     public void onBtn0Clicked(View view) {
